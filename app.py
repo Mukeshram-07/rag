@@ -15,7 +15,8 @@ def get_engine() -> RAGEngine:
 engine = get_engine()
 st.title("🍽️ Restaurant Business Assistant")
 st.caption(
-    "Ask questions about menus, recipes, inventory, sales, operations, and restaurant policies."
+    "Ask questions about menus, recipes, inventory, sales, operations, and restaurant policies "
+    "using Ollama Cloud."
 )
 
 with st.sidebar:
@@ -48,7 +49,7 @@ with st.sidebar:
     st.subheader("Indexed restaurant files")
     files = engine.indexed_files()
     st.write(files if files else "No files indexed yet.")
-    st.caption("Required Ollama models: llama3.2 and nomic-embed-text")
+    st.caption("Ollama Cloud model: gemma4:31b-cloud")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []

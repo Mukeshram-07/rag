@@ -23,9 +23,10 @@ class DocumentChunk:
 
 
 class OllamaEmbeddingFunction:
-    def __init__(self, base_url: str, model: str) -> None:
+    def __init__(self, base_url: str, model: str, headers: dict[str, str]) -> None:
         self.base_url = base_url.rstrip("/")
         self.model = model
+        self.headers = headers
 
     def name(self) -> str:
         return f"ollama-{self.model}"
@@ -34,6 +35,7 @@ class OllamaEmbeddingFunction:
         response = requests.post(
             f"{self.base_url}/api/embed",
             json={"model": self.model, "input": input},
+            headers=self.headers,
             timeout=120,
         )
         response.raise_for_status()
@@ -48,15 +50,26 @@ class OllamaEmbeddingFunction:
 
 class RAGEngine:
     def __init__(self) -> None:
-        self.base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-        self.chat_model = os.getenv("OLLAMA_CHAT_MODEL", "llama3.2")
+        self.base_url = os.getenv("OLLAMA_BASE_URL", "https://ollama.com")
+        self.api_key = os.getenv("OLLAMA_API_KEY", "").strip()
+        self.chat_model = os.getenv(
+            "OLLAMA_MODEL",
+            os.getenv("OLLAMA_CHAT_MODEL", "gemma4:31b-cloud"),
+        )
         self.embed_model = os.getenv("OLLAMA_EMBED_MODEL", "nomic-embed-text")
+        self.ollama_headers = (
+            {"Authorization": f"Bearer {self.api_key}"} if self.api_key else {}
+        )
         chroma_dir = Path(os.getenv("CHROMA_DIR", "./data/chroma"))
         chroma_dir.mkdir(parents=True, exist_ok=True)
         client = chromadb.PersistentClient(path=str(chroma_dir))
         self.collection = client.get_or_create_collection(
             name="knowledge",
-            embedding_function=OllamaEmbeddingFunction(self.base_url, self.embed_model),
+            embedding_function=OllamaEmbeddingFunction(
+                self.base_url,
+                self.embed_model,
+                self.ollama_headers,
+            ),
             metadata={"hnsw:space": "cosine"},
         )
 
@@ -157,6 +170,7 @@ class RAGEngine:
         response = requests.post(
             f"{self.base_url.rstrip('/')}/api/chat",
             json={"model": self.chat_model, "messages": messages, "stream": False},
+            headers=self.ollama_headers,
             timeout=180,
         )
         response.raise_for_status()

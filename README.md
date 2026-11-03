@@ -1,7 +1,7 @@
 # Restaurant Business Assistant
 
-A local restaurant business knowledge assistant using Streamlit, ChromaDB, Ollama, and
-`llama3.2`. Restaurant teams can upload menus, recipes, inventory reports, sales data,
+A restaurant business knowledge assistant using Streamlit, ChromaDB, Ollama Cloud, and
+`gemma4:31b-cloud`. Restaurant teams can upload menus, recipes, inventory reports, sales data,
 supplier information, and operating procedures, then ask questions using natural language.
 
 ## Windows setup
@@ -11,10 +11,12 @@ Open PowerShell in this folder:
 ```powershell
 Set-ExecutionPolicy -Scope Process Bypass
 .\setup.ps1
-ollama pull llama3.2
-ollama pull nomic-embed-text
 .\.venv\Scripts\python.exe -m streamlit run app.py
 ```
+
+Before starting, copy `.env.example` to `.env` and set `OLLAMA_API_KEY` to your Ollama Cloud
+API key. The app uses `https://ollama.com` and the `gemma4:31b-cloud` model; no local chat
+model is required.
 
 Open the URL printed by Streamlit, upload one or more restaurant `.pdf`, `.xlsx`, or `.xlsm`
 files, click **Index uploaded files**, and ask questions about the restaurant business.
@@ -33,13 +35,15 @@ The Chroma database is stored locally in `data/chroma`. Uploaded files are kept 
 
 Copy `.env.example` to `.env` to override:
 
-- `OLLAMA_BASE_URL`: Ollama server URL, default `http://localhost:11434`
-- `OLLAMA_CHAT_MODEL`: chat model, default `llama3.2`
+- `OLLAMA_BASE_URL`: Ollama Cloud URL, default `https://ollama.com`
+- `OLLAMA_API_KEY`: Ollama Cloud API key
+- `OLLAMA_MODEL`: chat model, default `gemma4:31b-cloud`
 - `OLLAMA_EMBED_MODEL`: embedding model, default `nomic-embed-text`
 - `CHROMA_DIR`: persistent Chroma directory, default `./data/chroma`
 
 ## Troubleshooting
 
-- Check Ollama is running with `ollama list`.
+- Check that `OLLAMA_API_KEY` is set and valid for Ollama Cloud.
 - If answers say no restaurant documents are indexed, index the uploaded files from the sidebar.
-- If embedding fails, run `ollama pull nomic-embed-text`.
+- If embedding fails, verify that your Ollama Cloud account can access
+  `OLLAMA_EMBED_MODEL`.
