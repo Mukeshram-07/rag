@@ -1,7 +1,8 @@
 # Restaurant Business Assistant
 
 A restaurant business knowledge assistant using Streamlit, ChromaDB, Ollama Cloud, and
-`gemma4:31b` through Ollama Cloud. Restaurant teams can upload menus, recipes, inventory reports, sales data,
+`gemma4:31b` through Ollama Cloud. Chroma uses a lightweight local retrieval embedding model;
+no local chat LLM is required. Restaurant teams can upload menus, recipes, inventory reports, sales data,
 supplier information, and operating procedures, then ask questions using natural language.
 
 ## Windows setup
@@ -15,8 +16,8 @@ Set-ExecutionPolicy -Scope Process Bypass
 ```
 
 For local Windows use, copy `.env.example` to `.env` and set `OLLAMA_API_KEY` to your Ollama
-Cloud API key. The app uses `https://ollama.com`, the `gemma4:31b` chat model, and the
-`embeddinggemma` embedding model; no local Ollama installation is required.
+Cloud API key. The app uses `https://ollama.com` for chat with `gemma4:31b`; Chroma downloads
+its lightweight retrieval embedding model automatically. No local Ollama installation is required.
 
 For Streamlit Cloud, open **Settings > Secrets** and paste valid TOML. The app reads these
 values from `st.secrets`; do not paste the `KEY=value` format from `.env.example`:
@@ -25,7 +26,6 @@ values from `st.secrets`; do not paste the `KEY=value` format from `.env.example
 OLLAMA_BASE_URL = "https://ollama.com"
 OLLAMA_API_KEY = "your-ollama-cloud-api-key"
 OLLAMA_MODEL = "gemma4:31b"
-OLLAMA_EMBED_MODEL = "embeddinggemma"
 CHROMA_DIR = "./data/chroma"
 ```
 
@@ -51,12 +51,11 @@ Copy `.env.example` to `.env` to override:
 - `OLLAMA_BASE_URL`: Ollama Cloud URL, default `https://ollama.com`
 - `OLLAMA_API_KEY`: Ollama Cloud API key
 - `OLLAMA_MODEL`: Ollama Cloud chat model, default `gemma4:31b`
-- `OLLAMA_EMBED_MODEL`: Ollama Cloud embedding model, default `embeddinggemma`
 - `CHROMA_DIR`: persistent Chroma directory, default `./data/chroma`
 
 ## Troubleshooting
 
 - Check that `OLLAMA_API_KEY` is set and valid for Ollama Cloud.
 - If answers say no restaurant documents are indexed, index the uploaded files from the sidebar.
-- If embedding fails, verify that your Ollama Cloud account can access
-  `OLLAMA_EMBED_MODEL`.
+- On first indexing, Chroma downloads its retrieval embedding model. Ensure the deployment
+  has outbound internet access.

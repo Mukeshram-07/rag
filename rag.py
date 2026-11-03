@@ -10,6 +10,7 @@ import chromadb
 import openpyxl
 import pymupdf
 import requests
+from chromadb.api.types import DefaultEmbeddingFunction
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -22,36 +23,6 @@ class DocumentChunk:
     location: str
 
 
-class OllamaEmbeddingFunction:
-    def __init__(self, base_url: str, model: str, headers: dict[str, str]) -> None:
-        self.base_url = base_url.rstrip("/")
-        self.model = model
-        self.headers = headers
-
-    def name(self) -> str:
-        return f"ollama-{self.model}"
-
-    def __call__(self, input: list[str]) -> list[list[float]]:
-        response = requests.post(
-            f"{self.base_url}/api/embed",
-            json={"model": self.model, "input": input},
-            headers=self.headers,
-            timeout=120,
-        )
-        if not response.ok:
-            raise RuntimeError(
-                f"Ollama embedding request failed with HTTP {response.status_code}. "
-                "Check OLLAMA_API_KEY and OLLAMA_EMBED_MODEL in Streamlit Secrets."
-            )
-        embeddings = response.json().get("embeddings")
-        if not embeddings:
-            raise RuntimeError("Ollama returned no embeddings.")
-        return embeddings
-
-    def embed_query(self, input: list[str]) -> list[list[float]]:
-        return self(input)
-
-
 class RAGEngine:
     def __init__(self) -> None:
         self.base_url = os.getenv("OLLAMA_BASE_URL", "https://ollama.com")
@@ -60,7 +31,6 @@ class RAGEngine:
             "OLLAMA_MODEL",
             os.getenv("OLLAMA_CHAT_MODEL", "gemma4:31b"),
         )
-        self.embed_model = os.getenv("OLLAMA_EMBED_MODEL", "embeddinggemma")
         self.ollama_headers = (
             {"Authorization": f"Bearer {self.api_key}"} if self.api_key else {}
         )
@@ -69,11 +39,7 @@ class RAGEngine:
         client = chromadb.PersistentClient(path=str(chroma_dir))
         self.collection = client.get_or_create_collection(
             name="knowledge",
-            embedding_function=OllamaEmbeddingFunction(
-                self.base_url,
-                self.embed_model,
-                self.ollama_headers,
-            ),
+            embedding_function=DefaultEmbeddingFunction(),
             metadata={"hnsw:space": "cosine"},
         )
 

@@ -11,7 +11,6 @@ for setting in (
     "OLLAMA_BASE_URL",
     "OLLAMA_API_KEY",
     "OLLAMA_MODEL",
-    "OLLAMA_EMBED_MODEL",
     "CHROMA_DIR",
 ):
     if setting not in os.environ and setting in st.secrets:
@@ -60,7 +59,7 @@ with st.sidebar:
     st.subheader("Indexed restaurant files")
     files = engine.indexed_files()
     st.write(files if files else "No files indexed yet.")
-    st.caption("Ollama Cloud models: gemma4:31b + embeddinggemma")
+    st.caption("Ollama Cloud chat: gemma4:31b | Chroma local retrieval embeddings")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
