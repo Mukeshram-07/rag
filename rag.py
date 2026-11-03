@@ -38,7 +38,11 @@ class OllamaEmbeddingFunction:
             headers=self.headers,
             timeout=120,
         )
-        response.raise_for_status()
+        if not response.ok:
+            raise RuntimeError(
+                f"Ollama embedding request failed with HTTP {response.status_code}. "
+                "Check OLLAMA_API_KEY and OLLAMA_EMBED_MODEL in Streamlit Secrets."
+            )
         embeddings = response.json().get("embeddings")
         if not embeddings:
             raise RuntimeError("Ollama returned no embeddings.")
@@ -173,7 +177,11 @@ class RAGEngine:
             headers=self.ollama_headers,
             timeout=180,
         )
-        response.raise_for_status()
+        if not response.ok:
+            raise RuntimeError(
+                f"Ollama chat request failed with HTTP {response.status_code}. "
+                "Check OLLAMA_API_KEY and OLLAMA_MODEL in Streamlit Secrets."
+            )
         answer = response.json().get("message", {}).get("content", "").strip()
         if not answer:
             raise RuntimeError("Ollama returned an empty answer.")

@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import streamlit as st
@@ -5,6 +6,16 @@ import streamlit as st
 from rag import RAGEngine
 
 st.set_page_config(page_title="Restaurant Business Assistant", page_icon="🍽️", layout="wide")
+
+for setting in (
+    "OLLAMA_BASE_URL",
+    "OLLAMA_API_KEY",
+    "OLLAMA_MODEL",
+    "OLLAMA_EMBED_MODEL",
+    "CHROMA_DIR",
+):
+    if setting not in os.environ and setting in st.secrets:
+        os.environ[setting] = str(st.secrets[setting])
 
 
 @st.cache_resource

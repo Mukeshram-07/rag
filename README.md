@@ -14,9 +14,22 @@ Set-ExecutionPolicy -Scope Process Bypass
 .\.venv\Scripts\python.exe -m streamlit run app.py
 ```
 
-Before starting, copy `.env.example` to `.env` and set `OLLAMA_API_KEY` to your Ollama Cloud
-API key. The app uses `https://ollama.com` and the `gemma4:31b-cloud` model; no local chat
-model is required.
+For local Windows use, copy `.env.example` to `.env` and set `OLLAMA_API_KEY` to your Ollama
+Cloud API key. The app uses `https://ollama.com` and the `gemma4:31b-cloud` model; no local
+chat model is required.
+
+For Streamlit Cloud, open **Settings > Secrets** and paste valid TOML. The app reads these
+values from `st.secrets`; do not paste the `KEY=value` format from `.env.example`:
+
+```toml
+OLLAMA_BASE_URL = "https://ollama.com"
+OLLAMA_API_KEY = "your-ollama-cloud-api-key"
+OLLAMA_MODEL = "gemma4:31b-cloud"
+OLLAMA_EMBED_MODEL = "nomic-embed-text"
+CHROMA_DIR = "./data/chroma"
+```
+
+See [.streamlit/secrets.toml.example](.streamlit/secrets.toml.example) for a template.
 
 Open the URL printed by Streamlit, upload one or more restaurant `.pdf`, `.xlsx`, or `.xlsm`
 files, click **Index uploaded files**, and ask questions about the restaurant business.
