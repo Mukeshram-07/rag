@@ -58,9 +58,9 @@ class RAGEngine:
         self.api_key = os.getenv("OLLAMA_API_KEY", "").strip()
         self.chat_model = os.getenv(
             "OLLAMA_MODEL",
-            os.getenv("OLLAMA_CHAT_MODEL", "gemma4:31b-cloud"),
+            os.getenv("OLLAMA_CHAT_MODEL", "gemma4:31b"),
         )
-        self.embed_model = os.getenv("OLLAMA_EMBED_MODEL", "nomic-embed-text")
+        self.embed_model = os.getenv("OLLAMA_EMBED_MODEL", "embeddinggemma")
         self.ollama_headers = (
             {"Authorization": f"Bearer {self.api_key}"} if self.api_key else {}
         )

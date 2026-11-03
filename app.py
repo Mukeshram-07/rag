@@ -60,7 +60,7 @@ with st.sidebar:
     st.subheader("Indexed restaurant files")
     files = engine.indexed_files()
     st.write(files if files else "No files indexed yet.")
-    st.caption("Ollama Cloud model: gemma4:31b-cloud")
+    st.caption("Ollama Cloud models: gemma4:31b + embeddinggemma")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []

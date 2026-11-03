@@ -1,7 +1,7 @@
 # Restaurant Business Assistant
 
 A restaurant business knowledge assistant using Streamlit, ChromaDB, Ollama Cloud, and
-`gemma4:31b-cloud`. Restaurant teams can upload menus, recipes, inventory reports, sales data,
+`gemma4:31b` through Ollama Cloud. Restaurant teams can upload menus, recipes, inventory reports, sales data,
 supplier information, and operating procedures, then ask questions using natural language.
 
 ## Windows setup
@@ -15,8 +15,8 @@ Set-ExecutionPolicy -Scope Process Bypass
 ```
 
 For local Windows use, copy `.env.example` to `.env` and set `OLLAMA_API_KEY` to your Ollama
-Cloud API key. The app uses `https://ollama.com` and the `gemma4:31b-cloud` model; no local
-chat model is required.
+Cloud API key. The app uses `https://ollama.com`, the `gemma4:31b` chat model, and the
+`embeddinggemma` embedding model; no local Ollama installation is required.
 
 For Streamlit Cloud, open **Settings > Secrets** and paste valid TOML. The app reads these
 values from `st.secrets`; do not paste the `KEY=value` format from `.env.example`:
@@ -24,8 +24,8 @@ values from `st.secrets`; do not paste the `KEY=value` format from `.env.example
 ```toml
 OLLAMA_BASE_URL = "https://ollama.com"
 OLLAMA_API_KEY = "your-ollama-cloud-api-key"
-OLLAMA_MODEL = "gemma4:31b-cloud"
-OLLAMA_EMBED_MODEL = "nomic-embed-text"
+OLLAMA_MODEL = "gemma4:31b"
+OLLAMA_EMBED_MODEL = "embeddinggemma"
 CHROMA_DIR = "./data/chroma"
 ```
 
@@ -50,8 +50,8 @@ Copy `.env.example` to `.env` to override:
 
 - `OLLAMA_BASE_URL`: Ollama Cloud URL, default `https://ollama.com`
 - `OLLAMA_API_KEY`: Ollama Cloud API key
-- `OLLAMA_MODEL`: chat model, default `gemma4:31b-cloud`
-- `OLLAMA_EMBED_MODEL`: embedding model, default `nomic-embed-text`
+- `OLLAMA_MODEL`: Ollama Cloud chat model, default `gemma4:31b`
+- `OLLAMA_EMBED_MODEL`: Ollama Cloud embedding model, default `embeddinggemma`
 - `CHROMA_DIR`: persistent Chroma directory, default `./data/chroma`
 
 ## Troubleshooting
