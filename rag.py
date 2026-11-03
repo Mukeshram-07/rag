@@ -129,7 +129,9 @@ class RAGEngine:
 
     def answer(self, question: str, history: list[dict[str, str]], top_k: int = 5) -> tuple[str, list[dict[str, Any]]]:
         if self.collection.count() == 0:
-            raise RuntimeError("No documents are indexed. Upload and index a PDF or Excel file first.")
+            raise RuntimeError(
+                "No restaurant documents are indexed. Upload and index a PDF or Excel file first."
+            )
         results = self.collection.query(query_texts=[question], n_results=top_k)
         documents = results.get("documents", [[]])[0]
         metadatas = results.get("metadatas", [[]])[0]
@@ -141,9 +143,12 @@ class RAGEngine:
             {
                 "role": "system",
                 "content": (
-                    "You are a precise document question-answering assistant. "
-                    "Answer only from the supplied context. If the context does not contain "
-                    "the answer, say you do not know. Cite sources like [1] or [2]."
+                    "You are a precise restaurant business assistant. Answer questions about "
+                    "menus, recipes, ingredients, inventory, sales, staffing, costs, suppliers, "
+                    "and restaurant operations using only the supplied context. "
+                    "If the context does not contain the answer, say you do not know. "
+                    "Do not invent prices, quantities, policies, or business metrics. "
+                    "Cite sources like [1] or [2]."
                 ),
             },
             *history[-6:],

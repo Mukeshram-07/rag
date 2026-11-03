@@ -1,6 +1,8 @@
-# Local RAG Chatbot
+# Restaurant Business Assistant
 
-A local PDF/Excel question-answering app using Streamlit, ChromaDB, Ollama, and `llama3.2`.
+A local restaurant business knowledge assistant using Streamlit, ChromaDB, Ollama, and
+`llama3.2`. Restaurant teams can upload menus, recipes, inventory reports, sales data,
+supplier information, and operating procedures, then ask questions using natural language.
 
 ## Windows setup
 
@@ -14,7 +16,16 @@ ollama pull nomic-embed-text
 .\.venv\Scripts\python.exe -m streamlit run app.py
 ```
 
-Open the URL printed by Streamlit, upload one or more `.pdf`, `.xlsx`, or `.xlsm` files, click **Index uploaded files**, and start chatting.
+Open the URL printed by Streamlit, upload one or more restaurant `.pdf`, `.xlsx`, or `.xlsm`
+files, click **Index uploaded files**, and ask questions about the restaurant business.
+
+Typical questions include:
+
+- Which ingredients are needed for a menu item?
+- What was the sales total for a specific day or month?
+- Which products are low in stock?
+- What is the approved recipe or preparation procedure?
+- What are the supplier prices or ordering policies?
 
 The Chroma database is stored locally in `data/chroma`. Uploaded files are kept in `uploads`. Both are ignored by Git.
 
@@ -30,5 +41,5 @@ Copy `.env.example` to `.env` to override:
 ## Troubleshooting
 
 - Check Ollama is running with `ollama list`.
-- If answers say no documents are indexed, index the uploaded files from the sidebar.
+- If answers say no restaurant documents are indexed, index the uploaded files from the sidebar.
 - If embedding fails, run `ollama pull nomic-embed-text`.

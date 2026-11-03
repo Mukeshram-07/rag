@@ -4,7 +4,7 @@ import streamlit as st
 
 from rag import RAGEngine
 
-st.set_page_config(page_title="Local RAG Chatbot", page_icon="📚", layout="wide")
+st.set_page_config(page_title="Restaurant Business Assistant", page_icon="🍽️", layout="wide")
 
 
 @st.cache_resource
@@ -13,19 +13,21 @@ def get_engine() -> RAGEngine:
 
 
 engine = get_engine()
-st.title("📚 Local RAG Chatbot")
-st.caption("Ask questions about your PDF and Excel knowledge base using Ollama + llama3.2.")
+st.title("🍽️ Restaurant Business Assistant")
+st.caption(
+    "Ask questions about menus, recipes, inventory, sales, operations, and restaurant policies."
+)
 
 with st.sidebar:
-    st.header("Knowledge base")
+    st.header("Restaurant knowledge base")
     uploaded_files = st.file_uploader(
-        "Upload PDF or Excel files",
+        "Upload restaurant PDFs or Excel files",
         type=["pdf", "xlsx", "xlsm"],
         accept_multiple_files=True,
     )
     if st.button("Index uploaded files", type="primary", use_container_width=True):
         if not uploaded_files:
-            st.warning("Choose at least one PDF or Excel file.")
+            st.warning("Choose at least one restaurant PDF or Excel file.")
         else:
             upload_dir = Path("uploads")
             upload_dir.mkdir(exist_ok=True)
@@ -43,7 +45,7 @@ with st.sidebar:
         st.session_state.messages = []
         st.success("Knowledge base cleared.")
     st.divider()
-    st.subheader("Indexed files")
+    st.subheader("Indexed restaurant files")
     files = engine.indexed_files()
     st.write(files if files else "No files indexed yet.")
     st.caption("Required Ollama models: llama3.2 and nomic-embed-text")
@@ -57,7 +59,9 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-question = st.chat_input("Ask a question about your documents...")
+question = st.chat_input(
+    "Ask about menus, inventory, sales, recipes, or restaurant operations..."
+)
 if question:
     st.session_state.messages.append({"role": "user", "content": question})
     with st.chat_message("user"):
